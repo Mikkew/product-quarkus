@@ -1,9 +1,18 @@
-#Maven
+# Maven
 target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
+pom.xml.next
 release.properties
+dependency-reduced-pom.xml
+.mvn/wrapper/maven-wrapper.jar
+
+# Quarkus
+.quarkus/
+quarkus.log
+*.log
+node_modules/
 
 # Eclipse
 .project
@@ -12,28 +21,33 @@ release.properties
 bin/
 
 # IntelliJ
-.idea
+.idea/
 *.ipr
 *.iml
 *.iws
+out/
 
 # NetBeans
 nb-configuration.xml
+nbproject/
 
 # Visual Studio Code
-.vscode
+.vscode/
 .factorypath
 
-# OSX
+# OS
 .DS_Store
+Thumbs.db
 
 # Vim
 *.swp
 *.swo
 
-# patch
+# Patch
 *.orig
 *.rej
 
-# Local environment
+# Local environment / secrets
 .env
+.env.*
+*.local
