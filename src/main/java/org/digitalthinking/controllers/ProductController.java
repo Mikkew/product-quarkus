@@ -4,9 +4,12 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriBuilder;
 import org.digitalthinking.entites.Product;
 import org.digitalthinking.services.ProductService;
 
+import java.net.URI;
 import java.util.List;
 
 @Path("/product")
@@ -22,8 +25,8 @@ public class ProductController {
     }
 
     @GET
-    public List<Product> listProduct() {
-        return productService.listProduct();
+    public Response listProduct() {
+        return Response.ok(productService.listProduct()).build();
     }
 
     @GET
@@ -34,21 +37,23 @@ public class ProductController {
 
     @POST
     public Response createdProduct(Product product) {
-        Product nuevo = productService.createdProduct(product);
-        return Response.status(Response.Status.CREATED).entity(nuevo).build();
+        final Product nuevo = productService.createdProduct(product);
+        final URI uri = UriBuilder.fromResource(Product.class)
+                .path("{id}")
+                .build(nuevo.getId());
+        return Response.created(uri).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Product updateProduct(@PathParam("id") Long id, Product product) {
-        return productService.updateProduct(id, product);
+    public Response updateProduct(@PathParam("id") Long id, Product product) {
+        return Response.accepted(productService.updateProduct(id, product)).build();
     }
 
     @DELETE
     @Path("/{id}")
     public Response deleteProduct(@PathParam("id") Long id) {
-        productService.deleteProduct(id);
-        return Response.noContent().build();
+        return Response.accepted(productService.deleteProduct(id)).build();
     }
 
 }

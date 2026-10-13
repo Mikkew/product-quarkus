@@ -12,7 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,10 +30,13 @@ class ProductControllerTest {
     private final Product product = new Product(1L, "C-1", "Name", "Description");
 
     @Test
-    void listProduct() {
+    void listProductReturns200() {
         when(productService.listProduct()).thenReturn(List.of(product));
 
-        assertEquals(List.of(product), controller.listProduct());
+        Response response = controller.listProduct();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(List.of(product), response.getEntity());
     }
 
     @Test
@@ -42,27 +47,34 @@ class ProductControllerTest {
     }
 
     @Test
-    void createdProductReturns201() {
+    void createdProductReturns201WithLocation() {
         when(productService.createdProduct(product)).thenReturn(product);
 
         Response response = controller.createdProduct(product);
 
         assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+        assertNotNull(response.getLocation());
+        assertTrue(response.getLocation().toString().endsWith("/1"));
+    }
+
+    @Test
+    void updateProductReturns202() {
+        when(productService.updateProduct(1L, product)).thenReturn(product);
+
+        Response response = controller.updateProduct(1L, product);
+
+        assertEquals(Response.Status.ACCEPTED.getStatusCode(), response.getStatus());
         assertSame(product, response.getEntity());
     }
 
     @Test
-    void updateProduct() {
-        when(productService.updateProduct(1L, product)).thenReturn(product);
+    void deleteProductReturns202() {
+        when(productService.deleteProduct(1L)).thenReturn(product);
 
-        assertSame(product, controller.updateProduct(1L, product));
-    }
-
-    @Test
-    void deleteProductReturns204() {
         Response response = controller.deleteProduct(1L);
 
         verify(productService).deleteProduct(1L);
-        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+        assertEquals(Response.Status.ACCEPTED.getStatusCode(), response.getStatus());
+        assertSame(product, response.getEntity());
     }
 }
