@@ -46,10 +46,13 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteProduct(Long id) {
+    public Product deleteProduct(Long id) {
+        final Product product = findProduct(id);
         boolean deleted = productRepository.deleteById(id);
         if (!deleted) {
             throw new WebApplicationException("No se pudo eliminar, producto no encontrado con ID: " + id, Response.Status.NOT_FOUND);
         }
+
+        return product;
     }
 }

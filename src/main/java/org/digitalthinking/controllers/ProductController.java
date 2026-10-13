@@ -14,8 +14,12 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class ProductController {
 
-    @Inject
     private ProductService productService;
+
+    @Inject
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GET
     public List<Product> listProduct() {
